@@ -1,2 +1,5 @@
 
-data/enwiki-latest-all-titles.txt
+data/links.db
+model/saved_model.pb
+model/variables/variables.data-00000-of-00001
+model/variables/variables.index
