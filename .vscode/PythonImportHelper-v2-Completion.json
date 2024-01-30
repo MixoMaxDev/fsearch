@@ -1,0 +1,150 @@
+[
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "bs4",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "bs4",
+        "description": "bs4",
+        "detail": "bs4",
+        "documentation": {}
+    },
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
+        "label": "fsearch_core",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "fsearch_core",
+        "description": "fsearch_core",
+        "detail": "fsearch_core",
+        "documentation": {}
+    },
+    {
+        "label": "FastAPI",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTMLResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
+        "isExtraImport": true,
+        "detail": "fastapi.responses",
+        "documentation": {}
+    },
+    {
+        "label": "JSONResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
+        "isExtraImport": true,
+        "detail": "fastapi.responses",
+        "documentation": {}
+    },
+    {
+        "label": "FileResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
+        "isExtraImport": true,
+        "detail": "fastapi.responses",
+        "documentation": {}
+    },
+    {
+        "label": "Request",
+        "importPath": "fastapi.requests",
+        "description": "fastapi.requests",
+        "isExtraImport": true,
+        "detail": "fastapi.requests",
+        "documentation": {}
+    },
+    {
+        "label": "uvicorn",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "uvicorn",
+        "description": "uvicorn",
+        "detail": "uvicorn",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "SearchResult",
+        "kind": 6,
+        "importPath": "fsearch_core",
+        "description": "fsearch_core",
+        "peekOfCode": "class SearchResult:\n    title: str\n    url: str\n    description: str\n    image_url: str\n    provider: str\n    provider_url: str\n    def __init__(self, title, url, description, image_url, provider, provider_url):\n        self.title = title\n        self.url = url",
+        "detail": "fsearch_core",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_filesize",
+        "kind": 2,
+        "importPath": "fsearch_core",
+        "description": "fsearch_core",
+        "peekOfCode": "def calculate_filesize(size_in_B: int) -> str:\n    \"\"\"\n    Convert a size in bytes to a human-readable string.\n    \"\"\"\n    if size_in_B < 1024:\n        return f\"{size_in_B} B\"\n    elif size_in_B < 1024**2:\n        return f\"{round(size_in_B/1024, 2)} KB\"\n    elif size_in_B < 1024**3:\n        return f\"{round(size_in_B/1024**2, 2)} MB\"",
+        "detail": "fsearch_core",
+        "documentation": {}
+    },
+    {
+        "label": "get_random_header",
+        "kind": 2,
+        "importPath": "fsearch_core",
+        "description": "fsearch_core",
+        "peekOfCode": "def get_random_header():\n    headers = [\n        { #make a somewhat realistic user agent\n            \"Connection\": \"keep-alive\", #means: keep the connection open\n            \"Cache-Control\": \"max-age=0\", #means: don't cache\n            \"sec-ch-ua\": f'\"Chromium\";v=\"{random.randint(90, 95)}\", \"Google Chrome\";v=\"{random.randint(90, 95)}\", \";Not A Brand\";v=\"99\"', #means: I'm using Chrome 94\n            \"sec-ch-ua-mobile\": \"?0\", #means: I'm not using a mobile device\n            \"sec-ch-ua-platform\": f'\"{random.choice([\"macOS\", \"Windows\", \"Linux\", \"iPhone\", \"iPad\", \"Android\"])}\"', #means: I'm using macOS\n            \"Upgrade-Insecure-Requests\": \"1\", #means: I want to be redirected to https if possible\n            \"User-Agent\": f\"Mozilla/5.0 ({random.choice(['Macintosh', 'Windows', 'Linux', 'iPhone', 'iPad', 'Android'])}; Intel Mac OS X 10_{random.randint(10, 15)}_{random.randint(1, 9)}) AppleWebKit/{random.randint(500, 599)}.36 (KHTML, like Gecko)\", #means: I'm using macOS and Chrome 94",
+        "detail": "fsearch_core",
+        "documentation": {}
+    },
+    {
+        "label": "search_bing",
+        "kind": 2,
+        "importPath": "fsearch_core",
+        "description": "fsearch_core",
+        "peekOfCode": "def search_bing(q: str) -> list[SearchResult]:\n    \"\"\"\n    Search Bing for the query q.\n    Returns a list of SearchResult objects.\n    \"\"\"\n    pass\ndef search_tpb(q: str) -> list[SearchResult]:\n    \"\"\"\n    Search The Pirate Bay for the query q.\n    Returns a list of SearchResult objects.",
+        "detail": "fsearch_core",
+        "documentation": {}
+    },
+    {
+        "label": "search_tpb",
+        "kind": 2,
+        "importPath": "fsearch_core",
+        "description": "fsearch_core",
+        "peekOfCode": "def search_tpb(q: str) -> list[SearchResult]:\n    \"\"\"\n    Search The Pirate Bay for the query q.\n    Returns a list of SearchResult objects.\n    \"\"\"\n    url = f\"https://apibay.org/q.php?q={q}\"\n    r = requests.get(url)\n    data = r.json()\n    results = []\n    for item in data:",
+        "detail": "fsearch_core",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "app = FastAPI()\n@app.get(\"/\")\nasync def root() -> FileResponse:\n    return FileResponse(\"./static/index.html\")\n@app.get(\"/search\")\nasync def search(q:str) -> JSONResponse:\n    tpb_results = fsc.search_tpb(q)\n    results = []\n    for result in tpb_results:\n        results.append(result.to_json())",
+        "detail": "main",
+        "documentation": {}
+    }
+]

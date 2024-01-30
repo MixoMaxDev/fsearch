@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fsearch</title>
+    <script>
+
+        async function display_spinner() {
+            var results_div = document.getElementById("results");
+
+            results_div.innerHTML = "";
+
+            var spinner = document.createElement("img");
+            spinner.src = "/static/spinner.gif";
+            //#755be1
+
+            results_div.appendChild(spinner);
+        }
+
+        async function search() {
+            var search_query = document.getElementById("search").value;
+
+            var url = "/search?q=" + search_query;
+
+
+            display_spinner();
+
+            var response = await fetch(url);
+
+            var results = await response.json();
+            /*
+
+            response:
+
+            [
+            {
+            "title": self.title,
+            "url": self.url,
+            "description": self.description,
+            "image_url": self.image_url,
+            "provider": self.provider,
+            "provider_url": self.provider_url
+            },
+            ...
+            ]
+            */
+
+            var results_div = document.getElementById("results");
+
+            results_div.innerHTML = "";
+
+            for (var i = 0; i < results.length; i++) {
+                var result = results[i];
+
+                var title = result["title"];
+                var url = result["url"];
+                var description = result["description"];
+                var image_url = result["image_url"];
+                var provider = result["provider"];
+                var provider_url = result["provider_url"];
+
+                append_result(title, url, description, image_url, provider, provider_url);
+            }
+        }
+
+        function append_result(title, url, description, image_url, provider, provider_url) {
+            
+            //append a result to the results div
+
+            var results_div = document.getElementById("results");
+
+            //result:
+            //image on the left
+            //title href to url
+            //description and provider below title
+
+            var result = document.createElement("div");
+            result.className = "hbox";
+            result.style.justifyContent = "flex-start";
+
+            var image = document.createElement("img");
+            image.src = image_url;
+            image.style.width = "100px";
+            image.style.height = "100px";
+            image.style.left = "0px";
+
+            var info = document.createElement("div");
+            info.className = "vbox";
+
+            var title_element = document.createElement("a");
+            title_element.href = url;
+            title_element.innerHTML = title;
+            title_element.style.textAlign = "left";
+
+            var description_element = document.createElement("div");
+            description_element.innerHTML = description;
+            description_element.style.textAlign = "left";
+
+            var provider_element = document.createElement("a");
+            provider_element.href = provider_url;
+            provider_element.innerHTML = provider;
+            provider_element.style.textAlign = "left";
+
+            info.appendChild(title_element);
+            info.appendChild(description_element);
+            info.appendChild(provider_element);
+
+            result.appendChild(image);
+            result.appendChild(info);
+
+            results_div.appendChild(result);
+        }
+
+
+        //search on enter
+        document.addEventListener("keydown", function(event) {
+            if (event.keyCode == 13) {
+                search();
+            }
+        });
+
+    </script>
+
+    <style>
+
+        body {
+            margin: 0px;
+            padding: 0px;
+            font-family: sans-serif;
+        }
+
+        .hbox {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .vbox {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #search {
+            width: 50vw;
+            height: 5vh;
+            font-size: 2vh;
+            border-radius: 5px;
+            border: 1px solid #755be1;
+        }
+
+        #search_button {
+            width: 10vw;
+            height: 5vh;
+            font-size: 2vh;
+            border-radius: 5px;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class = "vbox">
+
+        <div class = "hbox" style="height: 15vh">
+            <input type = "text" id = "search" placeholder = "Search">
+            <button onclick = "search()" id = "search_button">Search</button>
+        </div>
+
+        <div class = "hbox" style="overflow-y: scroll; height: 85vh">
+            <div id = "results"></div>
+        </div>
+    </div>
+    
+</body>
+</html>
