@@ -19,13 +19,17 @@ async def root() -> FileResponse:
 @app.get("/search")
 async def search(q:str) -> JSONResponse:
     tpb_results = fsc.search_tpb(q)
+    google_results = fsc.search_google(q)
     
     results = []
     
-    for result in tpb_results:
-        results.append(result.to_json())
+    results.extend(google_results)
+    results.extend(tpb_results)
     
-    return JSONResponse(content=results)
+    
+    results_json = [r.to_json() for r in results]
+    
+    return JSONResponse(content=results_json)
 
 @app.get("/static/{file}")
 async def static(file:str) -> FileResponse:

@@ -98,7 +98,7 @@
         "kind": 6,
         "importPath": "fsearch_core",
         "description": "fsearch_core",
-        "peekOfCode": "class SearchResult:\n    title: str\n    url: str\n    description: str\n    image_url: str\n    provider: str\n    provider_url: str\n    def __init__(self, title, url, description, image_url, provider, provider_url):\n        self.title = title\n        self.url = url",
+        "peekOfCode": "class SearchResult:\n    title: str\n    url: str\n    description: str\n    image_url: str\n    provider: str\n    provider_url: str\n    is_nsfw: bool = False\n    def __init__(self, title, url, description, image_url, provider, provider_url, is_nsfw = False):\n        self.title = title",
         "detail": "fsearch_core",
         "documentation": {}
     },
@@ -121,11 +121,11 @@
         "documentation": {}
     },
     {
-        "label": "search_bing",
+        "label": "search_google",
         "kind": 2,
         "importPath": "fsearch_core",
         "description": "fsearch_core",
-        "peekOfCode": "def search_bing(q: str) -> list[SearchResult]:\n    \"\"\"\n    Search Bing for the query q.\n    Returns a list of SearchResult objects.\n    \"\"\"\n    pass\ndef search_tpb(q: str) -> list[SearchResult]:\n    \"\"\"\n    Search The Pirate Bay for the query q.\n    Returns a list of SearchResult objects.",
+        "peekOfCode": "def search_google(q: str) -> list[SearchResult]:\n    # search google\n    cookie_data = {\n    \"CAPTCHA_SOLVER_ACTIVE\": \"false\",\n    \"GOOGLE_OGPC_COOKIE\": \"\",\n    \"GOOGLE_NID_COOKIE\": \"\",\n    \"GOOGLE_AEC_COOKIE\": \"\",\n    \"GOOGLE_1P_JAR_COOKIE\": \"\",\n    \"GOOGLE_ABUSE_COOKIE\": \"\"\n    }",
         "detail": "fsearch_core",
         "documentation": {}
     },
@@ -143,7 +143,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "app = FastAPI()\n@app.get(\"/\")\nasync def root() -> FileResponse:\n    return FileResponse(\"./static/index.html\")\n@app.get(\"/search\")\nasync def search(q:str) -> JSONResponse:\n    tpb_results = fsc.search_tpb(q)\n    results = []\n    for result in tpb_results:\n        results.append(result.to_json())",
+        "peekOfCode": "app = FastAPI()\n@app.get(\"/\")\nasync def root() -> FileResponse:\n    return FileResponse(\"./static/index.html\")\n@app.get(\"/search\")\nasync def search(q:str) -> JSONResponse:\n    tpb_results = fsc.search_tpb(q)\n    google_results = fsc.search_google(q)\n    results = []\n    results.extend(google_results)",
         "detail": "main",
         "documentation": {}
     }

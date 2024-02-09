@@ -16,14 +16,16 @@ class SearchResult:
     image_url: str
     provider: str
     provider_url: str
+    is_nsfw: bool = False
     
-    def __init__(self, title, url, description, image_url, provider, provider_url):
+    def __init__(self, title, url, description, image_url, provider, provider_url, is_nsfw = False):
         self.title = title
         self.url = url
         self.description = description
         self.image_url = image_url
         self.provider = provider
         self.provider_url = provider_url
+        self.is_nsfw = is_nsfw
     
     def to_json(self):
         data = {
@@ -32,7 +34,8 @@ class SearchResult:
             "description": self.description,
             "image_url": self.image_url,
             "provider": self.provider,
-            "provider_url": self.provider_url
+            "provider_url": self.provider_url,
+            "is_nsfw": self.is_nsfw
         }
         return data
 
@@ -165,12 +168,65 @@ def get_random_header():
 
 
 
-def search_bing(q: str) -> list[SearchResult]:
-    """
-    Search Bing for the query q.
-    Returns a list of SearchResult objects.
-    """
-    pass
+def search_google(q: str) -> list[SearchResult]:
+    # search google
+    
+    cookie_data = {
+    "CAPTCHA_SOLVER_ACTIVE": "false",
+    "GOOGLE_OGPC_COOKIE": "",
+    "GOOGLE_NID_COOKIE": "",
+    "GOOGLE_AEC_COOKIE": "",
+    "GOOGLE_1P_JAR_COOKIE": "",
+    "GOOGLE_ABUSE_COOKIE": ""
+    }
+    
+    cookies = {
+        "OGPC": cookie_data["GOOGLE_OGPC_COOKIE"],
+        "NID": cookie_data["GOOGLE_NID_COOKIE"],
+        "AEC": cookie_data["GOOGLE_AEC_COOKIE"],
+        "1P_JAR": cookie_data["GOOGLE_1P_JAR_COOKIE"],
+        "GOOGLE_ABUSE_EXEMPTION": cookie_data["GOOGLE_ABUSE_COOKIE"]
+    }
+    
+    headers = get_random_header()
+    
+    r = requests.get(f"https://www.google.com/search?q={q}", headers=headers, cookies=cookies)
+    
+    soup = bs4.BeautifulSoup(r.text, "html.parser")
+    
+    # get search results
+    results = []
+    for i in soup.find_all("div", class_="g"):
+        try:
+            # needed info:
+            # title
+            # url
+            # description
+            # image url
+            # provider (google)
+            # provider url (google.com)
+            # is_nsfw (bool)
+            
+            title = i.find("h3").text
+            link = i.find("a")["href"]
+            
+            try:
+                description = i.find("span", class_="aCOpRe").text
+            except:
+                description = ""
+                
+            image = i.find("img")["src"]
+            provider = "Google"
+            provider_url = "https://www.google.com"
+            is_nsfw = False
+            
+            results.append(SearchResult(title, link, description, image, provider, provider_url, is_nsfw))
+        
+        except Exception as e:
+            print(e)
+    
+    return results
+    
 
 def search_tpb(q: str) -> list[SearchResult]:
     """
@@ -209,7 +265,13 @@ def search_tpb(q: str) -> list[SearchResult]:
         provider = "The Pirate Bay"
         provider_url = "https://thepiratebay.org/"
         
-        res = SearchResult(title, url, description, image_url, provider, provider_url)
+        nsfw_categories = [502, 505, 506]
+        is_nsfw = (int(item["category"]) in nsfw_categories)
+        
+        if is_nsfw:
+            description += " | NSFW"
+        
+        res = SearchResult(title, url, description, image_url, provider, provider_url, is_nsfw)
         results.append(res)
     
     return results
